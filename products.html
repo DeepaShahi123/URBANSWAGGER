@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Products</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.0/dist/cdn.min.js" defer></script>
+</head>
+<body class="bg-gray-100" x-data="{ showOrders: false, showProfile: false }">
+
+<div class="flex min-h-screen">
+
+    <!-- Sidebar -->
+    <aside class="w-72 bg-white p-6 shadow-md hidden lg:block">
+        <div class="text-center mb-6">
+            <form th:action="@{/user/upload-image}" method="post" enctype="multipart/form-data">
+                <label for="profileImage" class="cursor-pointer">
+                    <img th:src="@{/images/profile-default.png}" alt="Profile Picture"
+                         class="w-24 h-24 rounded-full mx-auto mb-3 object-cover" />
+                </label>
+                <input type="file" name="profileImage" id="profileImage" class="hidden" onchange="this.form.submit()" />
+            </form>
+            <h2 class="text-xl font-semibold" th:text="${user.name}">User Name</h2>
+            <p class="text-gray-500" th:text="${user.email}">user@example.com</p>
+        </div>
+
+        <nav class="space-y-2">
+            <button @click="showOrders = true; showProfile = false"
+                    class="block w-full text-left py-2 px-4 bg-blue-100 text-blue-700 rounded">🛒 My Orders</button>
+            <button @click="showProfile = true; showOrders = false"
+                    class="block w-full text-left py-2 px-4 hover:bg-gray-100 rounded">⚙️ Edit Profile</button>
+
+            <!-- Logout Button -->
+            <form th:action="@{/logout}" method="post">
+                <button type="submit"
+                        class="w-full text-left py-2 px-4 bg-red-100 text-red-700 rounded hover:bg-red-200 mt-4">
+                    🚪 Logout
+                </button>
+            </form>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 lg:p-10">
+        <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Available Products</h1>
+
+        <!-- Search & Filters -->
+        <form method="get" th:action="@{/products}" class="flex flex-wrap gap-4 mb-8 justify-center">
+            <input type="text" name="keyword" placeholder="Search products..."
+                   class="px-4 py-2 border rounded w-64 focus:outline-none"
+                   th:value="${param.keyword}" />
+
+            <select name="category" class="px-4 py-2 border rounded focus:outline-none">
+                <option value="">All Categories</option>
+                <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}"
+                        th:selected="${param.category == cat}"></option>
+            </select>
+
+            <select name="brand" class="px-4 py-2 border rounded focus:outline-none">
+                <option value="">All Brands</option>
+                <option th:each="b : ${brands}" th:value="${b}" th:text="${b}"
+                        th:selected="${param.brand == b}"></option>
+            </select>
+
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Search
+            </button>
+        </form>
+
+        <!-- Product Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div th:each="product : ${products}" class="bg-white p-4 rounded shadow hover:shadow-lg transition">
+                <a th:href="@{/products/details/{id}(id=${product.id})}">
+                    <img th:if="${product.image != null}" 
+                         th:src="@{/products/image/{id}(id=${product.id})}" 
+                         alt="Product Image"
+                         class="w-full h-48 object-cover rounded mb-2" />
+                    <div th:if="${product.stock == 0}" class="text-red-600 font-bold text-center">Currently Unavailable</div>
+                </a>
+                <p class="text-xl font-semibold text-center text-gray-800" th:text="'₹' + ${product.price}"></p>
+            </div>
+        </div>
+
+        <!-- Orders Section -->
+        <div id="orders" class="mt-16" x-show="showOrders" x-transition>
+            <h2 class="text-2xl font-semibold mb-4">Your Orders</h2>
+            <div th:each="order : ${user.orders}" class="bg-white shadow p-4 rounded mb-4">
+                <p><strong>Order ID:</strong> <span th:text="${order.id}"></span></p>
+                <p><strong>Date:</strong> <span th:text="${#dates.format(order.orderDate, 'dd MMM yyyy')}"></span></p>
+                <p><strong>Status:</strong> <span th:text="${order.status}"></span></p>
+                <ul class="ml-4 list-disc">
+                    <li th:each="item : ${order.items}">
+                        <span th:text="${item.product.name}"></span> × <span th:text="${item.quantity}"></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Profile Edit -->
+        <div id="profile" class="mt-16" x-show="showProfile" x-transition>
+            <h2 class="text-2xl font-semibold mb-4">Edit Profile</h2>
+            <form th:action="@{/user/update}" th:object="${user}" method="post"
+                  class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="hidden" th:field="*{id}" />
+                <div>
+                    <label class="block font-medium mb-1">Phone Number</label>
+                    <input type="text" th:field="*{phoneNumber}" class="w-full border p-2 rounded" />
+                </div>
+                <div>
+                    <label class="block font-medium mb-1">Email</label>
+                    <input type="email" th:field="*{email}" class="w-full border p-2 rounded" />
+                </div>
+                <div>
+                    <label class="block font-medium mb-1">Address</label>
+                    <input type="text" th:field="*{address}" class="w-full border p-2 rounded" />
+                </div>
+                <div>
+                    <label class="block font-medium mb-1">Password</label>
+                    <input type="password" th:field="*{password}" class="w-full border p-2 rounded" />
+                </div>
+                <div class="col-span-2 text-right mt-4">
+                    <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
+                        Update Profile
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>
+

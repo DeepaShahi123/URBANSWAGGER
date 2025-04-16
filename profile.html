@@ -1,0 +1,15 @@
+<!-- templates/profile.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Profile</title>
+</head>
+<body>
+<h2>Welcome, <span th:text="${user.name}">User</span></h2>
+
+<p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+<p><strong>Role:</strong> <span th:text="${user.role}"></span></p>
+
+<a th:href="@{/logout}">Logout</a>
+</body>
+</html>

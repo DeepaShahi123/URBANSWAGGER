@@ -1,0 +1,124 @@
+
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Place Order</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script>
+        function incrementQty(id) {
+            const qtyInput = document.getElementById('qty-' + id);
+            qtyInput.value = parseInt(qtyInput.value) + 1;
+        }
+
+        function decrementQty(id) {
+            const qtyInput = document.getElementById('qty-' + id);
+            if (parseInt(qtyInput.value) > 1) {
+                qtyInput.value = parseInt(qtyInput.value) - 1;
+            }
+        }
+
+        function validateForm() {
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const phoneRegex = /^[0-9]{10}$/;
+
+            if (!/^[a-zA-Z ]+$/.test(name)) {
+                alert('Name should contain only letters');
+                return false;
+            }
+            if (!phoneRegex.test(phone)) {
+                alert('Phone number must be 10 digits');
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body class="bg-gray-100 p-6">
+
+<div class="max-w-4xl mx-auto bg-white p-8 rounded shadow-lg">
+    <h2 class="text-2xl font-bold mb-6">Shipping Details</h2>
+
+    <form th:action="@{/order/place}" method="post" th:object="${order}" onsubmit="return validateForm();">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block font-medium">Full Name</label>
+                <input type="text" th:field="*{name}" id="name" class="w-full border p-2 rounded" required>
+            </div>
+
+            <div>
+                <label class="block font-medium">Phone Number</label>
+                <div class="flex gap-2">
+                    <select class="border p-2 rounded" required>
+                        <option value="+91">+91</option>
+                        <option value="+1">+1</option>
+                        <option value="+44">+44</option>
+                    </select>
+                    <input type="text" th:field="*{phoneNumber}" id="phone" maxlength="10" class="w-full border p-2 rounded" required>
+                </div>
+            </div>
+
+            <div>
+                <label class="block font-medium">Email</label>
+                <input type="email" th:field="*{email}" class="w-full border p-2 rounded" required>
+            </div>
+
+            <div>
+                <label class="block font-medium">District</label>
+                <input type="text" th:field="*{district}" class="w-full border p-2 rounded" required>
+            </div>
+
+            <div>
+                <label class="block font-medium">Zip Code</label>
+                <input type="text" th:field="*{zipCode}" class="w-full border p-2 rounded" required>
+            </div>
+
+            <div>
+                <label class="block font-medium">Landmark</label>
+                <input type="text" th:field="*{landmark}" class="w-full border p-2 rounded">
+            </div>
+
+            <div>
+                <label class="block font-medium">House No.</label>
+                <input type="text" th:field="*{houseNo}" class="w-full border p-2 rounded">
+            </div>
+
+            <div>
+                <label class="block font-medium">State</label>
+                <input type="text" th:field="*{state}" class="w-full border p-2 rounded" required>
+            </div>
+        </div>
+
+        <div class="mt-6">
+            <a th:href="@{/order/new-address}" class="text-blue-600 hover:underline">Add New Address</a>
+        </div>
+
+        <div class="mt-8">
+            <h3 class="text-xl font-semibold mb-4">Your Cart</h3>
+            <div th:each="item : ${order.items}" class="border p-4 rounded mb-3">
+                <p><strong th:text="${item.product.name}">Product Name</strong></p>
+                <p>Price: ₹<span th:text="${item.product.price}"></span></p>
+                <div class="flex items-center gap-2 mt-2">
+                    <label class="font-medium">Quantity:</label>
+                    <button type="button" class="px-2 bg-gray-300 rounded" onclick="decrementQty([[${item.id}]])">−</button>
+                    <input type="number" th:name="quantities" th:id="'qty-' + ${item.id}" th:value="${item.quantity}" min="1" class="w-16 text-center border rounded">
+                    <button type="button" class="px-2 bg-gray-300 rounded" onclick="incrementQty([[${item.id}]])">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-6 flex justify-between">
+            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded">
+                Place Order
+            </button>
+           
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
+

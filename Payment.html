@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Payment</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-xl mx-auto bg-white p-8 rounded shadow-lg">
+        <h2 class="text-2xl font-bold mb-6">Choose Payment Method</h2>
+        <form th:action="@{/order/payment}" method="post">
+            <input type="hidden" name="orderId" th:value="${orderId}" />
+
+            <div class="mb-4">
+                <label class="block mb-2 font-medium">Select one:</label>
+                <label class="block">
+                    <input type="radio" name="paymentMethod" value="COD" required class="mr-2"> Cash on Delivery
+                </label>
+                <label class="block">
+                    <input type="radio" name="paymentMethod" value="UPI" required class="mr-2"> Pay via UPI
+                </label>
+                <label class="block">
+                    <input type="radio" name="paymentMethod" value="ATM" required class="mr-2"> Pay via ATM Card
+                </label>
+            </div>
+
+            <div>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded">
+                    Confirm Payment
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

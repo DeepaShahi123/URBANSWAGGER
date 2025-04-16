@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6">
+
+<div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+    <div class="flex flex-col md:flex-row gap-8">
+        <!-- Product Image -->
+        <img th:src="@{/products/image/{id}(id=${product.id})}" alt="Product Image"
+             class="w-full md:w-1/2 rounded-xl object-cover shadow-md">
+
+        <!-- Product Details -->
+        <div class="flex flex-col justify-between w-full">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-3" th:text="${product.name}"></h2>
+                <p class="text-gray-600 text-lg mb-1">Category: <span class="font-medium" th:text="${product.category}"></span></p>
+                <p class="text-gray-600 text-lg mb-1">Brand: <span class="font-medium" th:text="${product.brand}"></span></p>
+                <p class="text-2xl font-semibold text-green-700 mt-3 mb-4">₹<span th:text="${product.price}"></span></p>
+
+                <!-- Stock Status -->
+                <div th:if="${product.stock == 0}" class="text-red-600 font-semibold mb-4">
+                    Currently Unavailable
+                </div>
+            </div>
+
+            <!-- Add to Cart Button -->
+            <form th:action="@{/cart/add/{id}(id=${product.id})}" method="post" th:if="${product.stock > 0}">
+                <button type="submit"
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-5 rounded-xl shadow transition duration-200">
+                    Add to Cart
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

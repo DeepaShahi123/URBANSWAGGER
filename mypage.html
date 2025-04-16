@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Page - Cart</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6">
+<div class="max-w-4xl mx-auto bg-white p-6 rounded shadow">
+    <h2 class="text-2xl font-bold mb-4">My Cart</h2>
+
+    <div th:if="${#lists.isEmpty(cartItems)}">
+        <p class="text-gray-600">Your cart is empty.</p>
+    </div>
+
+    <div th:unless="${#lists.isEmpty(cartItems)}">
+        <table class="w-full table-auto mb-6">
+            <thead>
+            <tr>
+                <th class="text-left p-2">Product</th>
+                <th class="text-left p-2">Price</th>
+                <th class="text-left p-2">Quantity</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${cartItems}">
+                <td class="p-2" th:text="${item.product.name}"></td>
+                <td class="p-2" th:text="${item.product.price}"></td>
+                <td class="p-2" th:text="${item.quantity}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <a href="/order/place" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded">
+            Place Order
+        </a>
+    </div>
+</div>
+</body>
+</html>

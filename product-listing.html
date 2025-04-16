@@ -1,0 +1,74 @@
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Listing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+<div class="container mx-auto px-4 py-8">
+    <h2 class="text-3xl font-bold mb-6 text-center">Product Listing</h2>
+
+    <!-- Search and Filters -->
+    <form method="get" action="#" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <input type="text" name="keyword" placeholder="Search by name"
+               th:value="${param.keyword}"
+               class="p-2 border border-gray-300 rounded-lg w-full"/>
+
+        <select name="category"
+                class="p-2 border border-gray-300 rounded-lg w-full">
+            <option value="">All Categories</option>
+            <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}"
+                    th:selected="${param.category} == ${cat}"></option>
+        </select>
+
+        <select name="brand"
+                class="p-2 border border-gray-300 rounded-lg w-full">
+            <option value="">All Brands</option>
+            <option th:each="brand : ${brands}" th:value="${brand}" th:text="${brand}"
+                    th:selected="${param.brand} == ${brand}"></option>
+        </select>
+
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg">
+            Search
+        </button>
+    </form>
+
+    <!-- Product Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div th:each="product : ${products}" class="bg-white rounded-lg shadow hover:shadow-lg transition duration-300 p-4 flex flex-col items-center">
+            
+            <!-- Image as clickable link -->
+            <a th:href="@{'/products/' + ${product.id}}">
+                <img th:src="@{'/products/image/' + ${product.id}}" alt="Product Image"
+                     class="w-40 h-40 object-cover rounded-lg mb-2 hover:scale-105 transition duration-300"/>
+            </a>
+
+            <!-- Price -->
+            <div class="text-lg font-semibold text-gray-800 mb-2">
+                ₹<span th:text="${product.price}"></span>
+            </div>
+
+            <!-- Add to Cart button -->
+            <form method="post" th:action="@{'/cart/add/' + ${product.id}}">
+                <button type="submit"
+                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm rounded-lg">
+                    Add to Cart
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+
+

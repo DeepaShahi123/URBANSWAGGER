@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Shopping Cart</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="p-6 bg-gray-100">
+    <h1 class="text-2xl font-bold mb-4">Shopping Cart</h1>
+
+    <div th:if="${#lists.isEmpty(items)}" class="text-gray-500">
+        Your cart is empty.
+    </div>
+
+    <div th:if="${!#lists.isEmpty(items)}">
+        <table class="w-full mb-6 bg-white rounded shadow">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="p-2 text-left">Product</th>
+                    <th class="p-2">Price</th>
+                    <th class="p-2">Quantity</th>
+                    <th class="p-2">Total</th>
+                    <th class="p-2">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${items}">
+                    <td class="p-2" th:text="${item.product.name}">Product</td>
+                    <td class="p-2" th:text="${item.product.price}">Price</td>
+                    <td class="p-2">
+                        <form th:action="@{'/cart/update/' + ${item.product.id}}" method="post">
+                            <input type="number" name="quantity" th:value="${item.quantity}" min="1" class="w-16 border p-1 rounded">
+                            <button type="submit" class="ml-2 text-blue-500">Update</button>
+                        </form>
+                    </td>
+                    <td class="p-2" th:text="${item.totalPrice}">Total</td>
+                    <td class="p-2">
+                        <form th:action="@{'/cart/remove/' + ${item.product.id}}" method="post">
+                            <button class="text-red-500">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="text-right text-xl font-bold mb-4">
+            Total: ₹<span th:text="${total}">0</span>
+        </div>
+
+        <div class="flex justify-end space-x-4">
+            <a href="/products" class="bg-gray-300 px-4 py-2 rounded">Continue Shopping</a>
+            <form th:action="@{/cart/checkout}" method="post">
+                <button class="bg-green-500 text-white px-4 py-2 rounded">Checkout</button>
+            </form>
+        </div>
+
+        <div th:if="${param.success}" class="text-green-600 mt-4 font-semibold">
+            Order placed successfully! 🎉
+        </div>
+    </div>
+</body>
+</html>

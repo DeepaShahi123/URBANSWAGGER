@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin - Orders</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow mb-8">
+        <div class="max-w-7xl mx-auto px-4 py-5 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-blue-700">Admin - Order Management</h1>
+            <a href="/admin/dashboard" class="text-sm text-blue-600 hover:underline">← Back to Dashboard</a>
+        </div>
+    </nav>
+
+    <!-- Orders Table Section -->
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="bg-white shadow rounded-2xl p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Customer Orders</h2>
+
+            <div class="overflow-x-auto rounded-xl border border-gray-200">
+                <table class="min-w-full divide-y divide-gray-200 text-sm">
+                    <thead class="bg-blue-50 text-blue-700">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Order ID</th>
+                            <th class="px-4 py-3 text-left">Name</th>
+                            <th class="px-4 py-3 text-left">Email</th>
+                            <th class="px-4 py-3 text-left">Phone</th>
+                            <th class="px-4 py-3 text-left">Address</th>
+                            <th class="px-4 py-3 text-left">Payment Status</th>
+                            <th class="px-4 py-3 text-left">Payment Date</th>
+                            <th class="px-4 py-3 text-left">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-100">
+                        <tr th:each="order : ${orders}" class="hover:bg-gray-50 transition">
+                            <td class="px-4 py-3" th:text="${order.id}"></td>
+                            <td class="px-4 py-3" th:text="${order.name} ?: 'N/A'"></td>
+                            <td class="px-4 py-3" th:text="${order.email != null ? order.email : (order.user != null ? order.user.email : 'N/A')}"></td>
+                            <td class="px-4 py-3" th:text="${order.phoneNumber} ?: 'N/A'"></td>
+                            <td class="px-4 py-3" th:text="${order.houseNo} + ', ' + order.landmark + ', ' + order.district + ', ' + order.state + ' - ' + order.zipCode"></td>
+                            <td class="px-4 py-3" th:text="${order.payment != null ? order.payment.paymentStatus : 'Pending'}"></td>
+                            <td class="px-4 py-3" th:text="${order.payment != null ? #temporals.format(order.payment.paymentDate, 'yyyy-MM-dd HH:mm') : '-'}"></td>
+                            <td class="px-4 py-3">
+                                <button 
+                                    class="bg-blue-600 text-white text-xs px-3 py-1 rounded hover:bg-blue-700"
+                                    th:attr="data-order-id=${order.id}"
+                                    onclick="openModal(this)">
+                                    View
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div id="orderModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-white rounded-xl shadow-lg max-w-xl w-full p-6 relative">
+            <h3 class="text-lg font-semibold mb-4">Order Details</h3>
+
+            <div id="orderDetailsContent">
+                <!-- Order content will be injected here -->
+            </div>
+
+            <button onclick="closeModal()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">
+                ✕
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function openModal(button) {
+            const orderId = button.getAttribute('data-order-id');
+
+            fetch(`/admin/orders/details/${orderId}`)
+                .then(res => res.json())
+                .then(order => {
+                    const content = document.getElementById('orderDetailsContent');
+                    content.innerHTML = `
+                        <p><strong>Order ID:</strong> ${order.id}</p>
+                        <p><strong>Name:</strong> ${order.name}</p>
+                        <p><strong>Email:</strong> ${order.email || (order.user ? order.user.email : 'N/A')}</p>
+                        <p><strong>Phone:</strong> ${order.phoneNumber}</p>
+                        <p><strong>Payment Status:</strong> ${order.payment ? order.payment.paymentStatus : 'Pending'}</p>
+                        <p><strong>Payment Date:</strong> ${order.payment ? order.payment.paymentDate : '-'}</p>
+                        <div class="mt-4">
+                            <strong>Items:</strong>
+                            <ul class="list-disc list-inside">
+                                ${order.items.map(item =>
+                                    `<li>${item.productName} - Qty: ${item.quantity}, Price: ₹${item.price}</li>`
+                                ).join('')}
+                            </ul>
+                        </div>
+                    `;
+                    document.getElementById('orderModal').classList.remove('hidden');
+                    document.getElementById('orderModal').classList.add('flex');
+                });
+        }
+
+        function closeModal() {
+            document.getElementById('orderModal').classList.add('hidden');
+            document.getElementById('orderModal').classList.remove('flex');
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Manage Users</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-6">
+        <h2 class="text-2xl font-bold mb-6">Manage Users</h2>
+
+        <table class="min-w-full bg-white rounded shadow">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="py-3 px-4 text-left">Name</th>
+                    <th class="py-3 px-4 text-left">Email</th>
+                    <th class="py-3 px-4 text-left">Role</th>
+                    <th class="py-3 px-4 text-left">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="user : ${users}" class="border-t">
+                    <td class="py-3 px-4" th:text="${user.name}">User Name</td>
+                    <td class="py-3 px-4" th:text="${user.email}">User Email</td>
+                    <td class="py-3 px-4" th:text="${user.role}">User Role</td>
+                    <td class="py-3 px-4 space-x-2">
+                        <a th:href="@{'/admin/users/edit/' + ${user.id}}" class="text-blue-500 hover:underline">Edit</a>
+                        <a th:href="@{'/admin/users/delete/' + ${user.id}}" class="text-red-500 hover:underline" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit User</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-8">
+    <h1 class="text-3xl font-bold mb-6">Edit User</h1>
+    <form th:action="@{'/admin/users/update/' + ${user.id}}" th:object="${user}" method="post" class="bg-white p-6 rounded shadow-md max-w-lg">
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold">Email:</label>
+            <input type="email" th:field="*{email}" class="border w-full p-2 rounded" required />
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold">Role:</label>
+            <input type="text" th:field="*{role}" class="border w-full p-2 rounded" required />
+        </div>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
+    </form>
+</body>
+</html>

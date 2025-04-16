@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head><!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pay Now</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6">
+<div class="max-w-2xl mx-auto bg-white p-8 rounded shadow-lg">
+
+    <h2 class="text-2xl font-bold mb-6">Choose Payment Method</h2>
+
+    <form th:action="@{/payment/submit}" method="post">
+        <div class="space-y-4">
+            <div>
+                <label class="flex items-center space-x-2">
+                    <input type="radio" name="paymentMethod" value="COD" class="form-radio text-green-600" required>
+                    <span>Cash on Delivery (COD)</span>
+                </label>
+            </div>
+
+            <div>
+                <label class="flex items-center space-x-2">
+                    <input type="radio" name="paymentMethod" value="UPI" class="form-radio text-blue-600">
+                    <span>Pay via UPI</span>
+                </label>
+                <input type="text" name="upiId" placeholder="Enter UPI ID" class="w-full mt-2 p-2 border rounded" />
+            </div>
+
+            <div>
+                <label class="flex items-center space-x-2">
+                    <input type="radio" name="paymentMethod" value="CARD" class="form-radio text-purple-600">
+                    <span>Pay via ATM/Debit/Credit Card</span>
+                </label>
+                <div class="grid grid-cols-1 gap-2 mt-2">
+                    <input type="text" name="cardNumber" maxlength="16" placeholder="Card Number" class="w-full p-2 border rounded">
+                    <input type="text" name="expiry" placeholder="MM/YY" class="w-full p-2 border rounded">
+                    <input type="password" name="cvv" maxlength="3" placeholder="CVV" class="w-full p-2 border rounded">
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-6">
+            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded">
+                Confirm Payment
+            </button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

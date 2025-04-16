@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Manage Orders</title>
+    <link href="/css/tailwind.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mx-auto p-6">
+        <h2 class="text-2xl font-bold mb-4">Orders</h2>
+        <table class="min-w-full bg-white">
+            <thead>
+                <tr>
+                    <th class="py-2 px-4 border-b">Order ID</th>
+                    <th class="py-2 px-4 border-b">User</th>
+                    <th class="py-2 px-4 border-b">Total</th>
+                    <th class="py-2 px-4 border-b">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="order : ${orders}">
+                    <td class="py-2 px-4 border-b" th:text="${order.id}">Order ID</td>
+                    <td class="py-2 px-4 border-b" th:text="${order.user.name}">User Name</td>
+                    <td class="py-2 px-4 border-b" th:text="${order.total}">Total Amount</td>
+                    <td class="py-2 px-4 border-b" th:text="${order.status}">Order Status</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
